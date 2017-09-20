@@ -1,8 +1,8 @@
 extends layout/main.pug
 
 block body
-  h1 로그인
-  form(method='POST' action='/login')
+  h1 회원가입 
+  form(method='POST' action='/register')
           input(type='hidden' name='_csrf' value=csrfToken)
           div.form-group
             label(for='username') UserName
@@ -10,7 +10,4 @@ block body
           div.form-group
             label(for='password') Password
             input.form-control(type='password' id='password' placeholder='password' name='password')
-          button.btn.btn-primary(type='submit') 로그인
-  p: a(href='/auth/github') Github으로 로그인
-  p: a(href='/auth/google') Google로 로그인
-  p: a(href='/register') 회원가입
+          button.btn.btn-primary(type='submit') 회원가입

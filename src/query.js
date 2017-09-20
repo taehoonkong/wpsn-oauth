@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const validator = require('validator')
 
 module.exports = {
-  firstOrCreateUserByProvider(provider, provider_user_id, access_token=null) {
+  firstOrCreateUserByProvider(provider, provider_user_id, access_token=null, avatar_url=null) {
     return knex('user')
       .where({
         provider,
@@ -18,7 +18,8 @@ module.exports = {
             .insert({
               provider,
               provider_user_id,
-              access_token
+              access_token,
+              avatar_url
             })
             .then(([id]) => {
               return knex('user')
@@ -28,9 +29,25 @@ module.exports = {
         }
       })
   },
-  getUserById(id) {
+  getUserById(provider_user_id) {
     return knex('user')
-      .where({id})
+      .join('localuser', 'user.provider_user_id', '=', 'localuser.id')
+      .select('user.provider', 'user.provider_user_id', 'localuser.password')
+      .where({provider_user_id})
       .first()
   },
+  createUser(provider, provider_user_id, password) {
+    return knex('user')
+      .insert({
+        provider,
+        provider_user_id,
+      })
+      .then(() => {
+        return knex('localuser')
+          .insert({
+            id: provider_user_id,
+            password
+          })
+      })
+  }
 }
